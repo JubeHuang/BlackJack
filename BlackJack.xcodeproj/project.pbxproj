@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8DEAB53428EC7EB30063A675 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DEAB53328EC7EB30063A675 /* Card.swift */; };
 		BB4CE6E728EC3B55002F841F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4CE6E628EC3B55002F841F /* AppDelegate.swift */; };
 		BB4CE6E928EC3B55002F841F /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4CE6E828EC3B55002F841F /* SceneDelegate.swift */; };
 		BB4CE6EB28EC3B55002F841F /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB4CE6EA28EC3B55002F841F /* ViewController.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8DEAB53328EC7EB30063A675 /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		BB4CE6E328EC3B55002F841F /* BlackJack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BlackJack.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BB4CE6E628EC3B55002F841F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BB4CE6E828EC3B55002F841F /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 				BB4CE6E628EC3B55002F841F /* AppDelegate.swift */,
 				BB4CE6E828EC3B55002F841F /* SceneDelegate.swift */,
 				BB4CE6EA28EC3B55002F841F /* ViewController.swift */,
+				8DEAB53328EC7EB30063A675 /* Card.swift */,
 				BB4CE6EC28EC3B55002F841F /* Main.storyboard */,
 				BB4CE6EF28EC3B55002F841F /* Assets.xcassets */,
 				BB4CE6F128EC3B55002F841F /* LaunchScreen.storyboard */,
@@ -141,6 +144,7 @@
 				BB4CE6EB28EC3B55002F841F /* ViewController.swift in Sources */,
 				BB4CE6E728EC3B55002F841F /* AppDelegate.swift in Sources */,
 				BB4CE6E928EC3B55002F841F /* SceneDelegate.swift in Sources */,
+				8DEAB53428EC7EB30063A675 /* Card.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
