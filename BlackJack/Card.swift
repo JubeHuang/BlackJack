@@ -8,5 +8,5 @@
 import Foundation
 struct Card {
     var suit : String
-    var rank : String
+    var rank : Int
 }
