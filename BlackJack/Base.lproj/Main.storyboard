@@ -74,14 +74,14 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="$" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Opx-rZ-vL6">
-                                        <rect key="frame" x="21" y="2" width="8" height="15"/>
+                                        <rect key="frame" x="13" y="2" width="8" height="15"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="2000" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="shs-e2-qmr">
-                                        <rect key="frame" x="31" y="2" width="30" height="15"/>
+                                        <rect key="frame" x="23" y="2" width="47" height="15"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="12"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -212,6 +212,7 @@
                         <outlet property="betMoneyLabel" destination="9Fe-uS-Rqk" id="Dzj-CN-3uP"/>
                         <outlet property="playerSum" destination="kqa-Gz-qqJ" id="Y7O-uc-2tS"/>
                         <outlet property="remainMoneyLabel" destination="shs-e2-qmr" id="9uy-tx-0DU"/>
+                        <outlet property="standBtn" destination="hVP-z3-caM" id="kGR-eM-8br"/>
                         <outlet property="wordingLabel" destination="Mev-kn-fld" id="4BO-PN-85p"/>
                         <outletCollection property="playerCards" destination="8bg-ZQ-ABE" collectionClass="NSMutableArray" id="izl-AY-i8P"/>
                         <outletCollection property="playerCards" destination="APh-lO-6zW" collectionClass="NSMutableArray" id="Dxr-dR-U4H"/>
