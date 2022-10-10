@@ -24,8 +24,6 @@ class ViewController: UIViewController {
     var playerCardImageIndex = 1
     var bankerCardImageNumber = 1
     var cards = [Card]()
-//    var playerCardsArray = [Card]()
-//    var bankerCardsArray = [Card]()
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -40,7 +38,6 @@ class ViewController: UIViewController {
     //下注
     @IBAction func deal(_ sender: UIButton) {
         cards.shuffle()
-        print(cards)
         if betMoneyLabel.text != "0" {
             for i in 0...4 {
                 self.playerCards[i].alpha = 0
@@ -59,17 +56,6 @@ class ViewController: UIViewController {
                 self.bankerCards[1].image = UIImage(named: self.cards[3].suit + "\(self.cards[3].rank)")
                 self.bankerCards[1].alpha = 1
             }
-//            playerCardsArray.append(cards[0])
-//            playerCardsArray.append(cards[2])
-//            bankerCardsArray.append(cards[1])
-//            bankerCardsArray.append(cards[1])
-//            for i in 0...3{
-//                if cards[i].rank > 10 {
-//                    cards[i].rank = 10
-//                } else if cards[i].rank == 1 {
-//                    cards[i].rank = 11
-//                }
-//            }
             //玩家排計算
             switch cards[0].rank {
             case 11...13:
@@ -177,7 +163,6 @@ class ViewController: UIViewController {
     }
     //開牌
     @IBAction func stand(_ sender: UIButton) {
-        //print(cards)
         let betMoney = Int(betMoneyLabel.text!)!
         var remainMoney = Int(remainMoneyLabel.text!)!
         //show蓋牌
@@ -239,7 +224,6 @@ class ViewController: UIViewController {
         if betMoneyLabel.text == "0", remainMoneyLabel.text == "0"{
             reStart()
         }
-        print("after",cards)
     }
     //要牌
     @IBAction func hit(_ sender: UIButton) {
@@ -258,43 +242,36 @@ class ViewController: UIViewController {
         default:
             break
         }
-        if playerSumNumber > 11 {
-            if cards[0].rank == 1 {
-                playerSumNumber -= 10
-            } else if cards[2].rank == 1 {
-                playerSumNumber -= 10
-            } else if cards[0].rank == 1, cards[2].rank == 1 {
-                playerSumNumber -= 20
+        switch playerCardImageIndex {
+        case 2:
+            if playerSumNumber > 11 {
+                if cards[0].rank == 1 {
+                    playerSumNumber -= 10
+                } else if cards[2].rank == 1 {
+                    playerSumNumber -= 10
+                } else if cards[0].rank == 1, cards[2].rank == 1 {
+                    playerSumNumber -= 20
+                }
+            } else {
+                if cards[stackOfCardIndex].rank == 1 {
+                    playerSumNumber += 10
+                }
             }
-        } else {
-            if cards[stackOfCardIndex].rank == 1 {
-                playerSumNumber += 10
+        case 3:
+            if playerSumNumber <= 11 {
+                if cards[stackOfCardIndex].rank == 1 {
+                    playerSumNumber += 10
+                }
             }
+        case 4:
+            if playerSumNumber <= 11 {
+                if cards[stackOfCardIndex].rank == 1 {
+                    playerSumNumber += 10
+                }
+            }
+        default:
+            break
         }
-//        if playerSumNumber <= 11 {
-//            if cards[stackOfCardIndex].rank >= 10 {
-//                cards[stackOfCardIndex].rank = 10
-//                playerSumNumber += cards[stackOfCardIndex].rank
-//                if cards[0].rank == 11 {
-//                    cards[0].rank = 1
-//                    playerSumNumber -= 10
-//                } else if cards[2].rank == 11 {
-//                    cards[2].rank = 1
-//                    playerSumNumber -= 10
-//                } else if cards[0].rank == 11, cards[2].rank == 11 {
-//                    cards[0].rank = 1
-//                    cards[2].rank = 1
-//                    playerSumNumber -= 20
-//                }
-//            } else if playerSumNumber <= 11, cards[stackOfCardIndex].rank == 1 {
-//                cards[stackOfCardIndex].rank = 11
-//                playerSumNumber += cards[stackOfCardIndex].rank
-//            } else {
-//                playerSumNumber += cards[stackOfCardIndex].rank
-//            }
-//        } else {
-//            playerSumNumber += cards[stackOfCardIndex].rank
-//        }
         playerSum.text = "\(playerSumNumber)"
     }
     @IBAction func surrender(_ sender: UIButton) {
