@@ -27,6 +27,13 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        for suit in suits {
+            for rank in ranks {
+                let card = Card(suit: suit, rank: rank)
+                cards.append(card)
+            }
+        }
+        cards.shuffle()
         reStart()
     }
     //下注
@@ -57,6 +64,7 @@ class ViewController: UIViewController {
                 }
             }
             playerSumNumber = cards[0].rank + cards[2].rank
+            //拿到兩張A
             if cards[0].rank == 11, cards[2].rank == 11 {
                 playerSumNumber = 12
             }
@@ -119,6 +127,7 @@ class ViewController: UIViewController {
     }
     //開牌
     @IBAction func stand(_ sender: UIButton) {
+        //print(cards)
         let betMoney = Int(betMoneyLabel.text!)!
         var remainMoney = Int(remainMoneyLabel.text!)!
         //show蓋牌
@@ -141,10 +150,10 @@ class ViewController: UIViewController {
                     bankerSumNumber += cards[stackOfCardIndex].rank
                     if cards[1].rank == 11 {
                         cards[1].rank = 1
-                        bankerSumNumber += cards[stackOfCardIndex].rank - 10
+                        bankerSumNumber -= 10
                     } else if cards[3].rank == 11 {
                         cards[3].rank = 1
-                        bankerSumNumber += cards[stackOfCardIndex].rank - 10
+                        bankerSumNumber -= 10
                     } else if cards[1].rank == 11, cards[3].rank == 11 {
                         cards[1].rank = 1
                         cards[3].rank = 1
@@ -173,7 +182,7 @@ class ViewController: UIViewController {
         stackOfCardIndex = 3
         playerCardImageIndex = 1
         bankerCardImageNumber = 1
-        shuffleCards()
+        cards.shuffle()
         // 玩家沒錢了
         if betMoneyLabel.text == "0", remainMoneyLabel.text == "0"{
             reStart()
@@ -187,23 +196,27 @@ class ViewController: UIViewController {
             self.playerCards[self.playerCardImageIndex].image = UIImage(named: self.cards[self.stackOfCardIndex].suit + "\(self.cards[self.stackOfCardIndex].rank)")
             self.playerCards[self.playerCardImageIndex].alpha = 1
         }
-        if cards[stackOfCardIndex].rank >= 10 {
-            cards[stackOfCardIndex].rank = 10
-            playerSumNumber += cards[stackOfCardIndex].rank
-            if cards[0].rank == 11 {
-                cards[0].rank = 1
-                playerSumNumber += cards[stackOfCardIndex].rank - 10
-            } else if cards[2].rank == 11 {
-                cards[2].rank = 1
-                playerSumNumber += cards[stackOfCardIndex].rank - 10
-            } else if cards[0].rank == 11, cards[2].rank == 11 {
-                cards[0].rank = 1
-                cards[2].rank = 1
-                playerSumNumber += cards[stackOfCardIndex].rank - 20
+        if playerSumNumber <= 11 {
+            if cards[stackOfCardIndex].rank >= 10 {
+                cards[stackOfCardIndex].rank = 10
+                playerSumNumber += cards[stackOfCardIndex].rank
+                if cards[0].rank == 11 {
+                    cards[0].rank = 1
+                    playerSumNumber -= 10
+                } else if cards[2].rank == 11 {
+                    cards[2].rank = 1
+                    playerSumNumber -= 10
+                } else if cards[0].rank == 11, cards[2].rank == 11 {
+                    cards[0].rank = 1
+                    cards[2].rank = 1
+                    playerSumNumber -= 20
+                }
+            } else if playerSumNumber <= 11, cards[stackOfCardIndex].rank == 1 {
+                cards[stackOfCardIndex].rank = 11
+                playerSumNumber += cards[stackOfCardIndex].rank
+            } else {
+                playerSumNumber += cards[stackOfCardIndex].rank
             }
-        } else if bankerSumNumber <= 11, cards[stackOfCardIndex].rank == 1 {
-            cards[stackOfCardIndex].rank = 11
-            playerSumNumber += cards[stackOfCardIndex].rank
         } else {
             playerSumNumber += cards[stackOfCardIndex].rank
         }
@@ -220,15 +233,6 @@ class ViewController: UIViewController {
             remainMoneyLabel.text = "\(remainMoney)"
         }
     }
-    func shuffleCards() {
-        for suit in suits {
-            for rank in ranks {
-                let card = Card(suit: suit, rank: rank)
-                cards.append(card)
-            }
-        }
-        cards.shuffle()
-    }
     func reStart() {
         wordingLabel.text = "請下注開始遊戲"
         remainMoneyLabel.text = "2000"
@@ -238,7 +242,6 @@ class ViewController: UIViewController {
         stackOfCardIndex = 3
         playerCardImageIndex = 1
         bankerCardImageNumber = 1
-        shuffleCards()
     }
     func showBankerHideCard(){
         UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0) {
