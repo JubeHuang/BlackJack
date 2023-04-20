@@ -16,6 +16,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var remainMoneyLabel: UILabel!
     @IBOutlet weak var standBtn: UIButton!
     @IBOutlet weak var betMoneyLabel: UILabel!
+    
     let suits = ["club", "spade", "heart", "diamond"]
     let ranks = Array(1...13)
     var playerSumNumber = 0
@@ -24,6 +25,7 @@ class ViewController: UIViewController {
     var playerCardImageIndex = 1
     var bankerCardImageNumber = 1
     var cards = [Card]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
@@ -39,8 +41,8 @@ class ViewController: UIViewController {
     @IBAction func deal(_ sender: UIButton) {
         cards.shuffle()
         if betMoneyLabel.text != "0" {
-            for i in 0...4 {
-                self.playerCards[i].alpha = 0
+            for card in self.playerCards {
+                card.alpha = 0
             }
             //莊閒各第一張牌
             UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0) {
@@ -134,6 +136,7 @@ class ViewController: UIViewController {
             remainMoneyLabel.text = "\(remainMoney)"
         }
     }
+    
     @IBAction func addMinusBetMoney(_ sender: UIButton) {
         var betMoney = Int(betMoneyLabel.text!)!
         var remainMoney = Int(remainMoneyLabel.text!)!
@@ -147,10 +150,10 @@ class ViewController: UIViewController {
             if remainMoney >= 100 {
                 remainMoney -= 100
                 betMoney += 100
-                for i in 0...4{
-                    playerCards[i].alpha = 0
-                    bankerCards[i].alpha = 0
-                }
+                
+                playerCards.forEach({$0.alpha = 0})
+                bankerCards.forEach({$0.alpha = 0})
+        
                 playerSum.text = "0"
                 bankerSum.text = "0"
             }
@@ -285,6 +288,7 @@ class ViewController: UIViewController {
             remainMoneyLabel.text = "\(remainMoney)"
         }
     }
+    
     func reStart() {
         wordingLabel.text = "請下注開始遊戲"
         remainMoneyLabel.text = "2000"
@@ -295,6 +299,7 @@ class ViewController: UIViewController {
         playerCardImageIndex = 1
         bankerCardImageNumber = 1
     }
+    
     func showBankerHideCard(){
         UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0) {
             self.bankerCards[0].image = UIImage(named: self.cards[1].suit + "\(self.cards[1].rank)")
