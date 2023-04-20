@@ -58,7 +58,7 @@ class ViewController: UIViewController {
                 self.bankerCards[1].image = UIImage(named: self.cards[3].suit + "\(self.cards[3].rank)")
                 self.bankerCards[1].alpha = 1
             }
-            //玩家排計算
+            //玩家牌計算
             switch cards[0].rank {
             case 11...13:
                 playerSumNumber = 10
@@ -79,7 +79,7 @@ class ViewController: UIViewController {
             default:
                 break
             }
-            //莊家排計算
+            //莊家牌計算
             switch cards[3].rank {
             case 11...13:
                 bankerSumNumber = 10
