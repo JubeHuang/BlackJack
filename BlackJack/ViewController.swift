@@ -21,9 +21,9 @@ class ViewController: UIViewController {
     let ranks = Array(1...13)
     var playerSumNumber = 0
     var bankerSumNumber = 0
+    lazy var realBankerSumNumber = 0
     var stackOfCardIndex = 3
     var playerCardImageIndex = 1
-    var bankerCardImageNumber = 1
     var cards = [Card]()
     
     override func viewDidLoad() {
@@ -39,105 +39,78 @@ class ViewController: UIViewController {
     }
     //下注
     @IBAction func deal(_ sender: UIButton) {
+        guard betMoneyLabel.text != "0" else { return }
+        
         cards.shuffle()
-        if betMoneyLabel.text != "0" {
-            for card in self.playerCards {
-                card.alpha = 0
-            }
-            //莊閒各第一張牌
-            UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0) {
-               self.playerCards[0].image = UIImage(named: self.cards[0].suit + "\(self.cards[0].rank)")
-                self.playerCards[0].alpha = 1
-                self.bankerCards[0].image = UIImage(named: "cardBack")
-                self.bankerCards[0].alpha = 1
-            }
-            //莊閒各第二張牌
-            UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.8, delay: 0.5) {
-                self.playerCards[1].image = UIImage(named: self.cards[2].suit + "\(self.cards[2].rank)")
-                self.playerCards[1].alpha = 1
-                self.bankerCards[1].image = UIImage(named: self.cards[3].suit + "\(self.cards[3].rank)")
-                self.bankerCards[1].alpha = 1
-            }
-            //玩家牌計算
-            switch cards[0].rank {
-            case 11...13:
-                playerSumNumber = 10
-            case 2...10:
-                playerSumNumber = cards[0].rank
-            case 1:
-                playerSumNumber = 11
-            default:
-                break
-            }
-            switch cards[2].rank {
-            case 11...13:
-                playerSumNumber += 10
-            case 2...10:
-                playerSumNumber += cards[2].rank
-            case 1:
-                playerSumNumber += 11
-            default:
-                break
-            }
-            //莊家牌計算
-            switch cards[3].rank {
-            case 11...13:
-                bankerSumNumber = 10
-            case 2...10:
-                bankerSumNumber = cards[3].rank
-            case 1:
-                bankerSumNumber = 11
-            default:
-                break
-            }
-            var realBankerSumNumber = 0
-            switch cards[1].rank {
-            case 11...13:
-                realBankerSumNumber = bankerSumNumber + 10
-            case 2...10:
-                realBankerSumNumber = bankerSumNumber + cards[1].rank
-            case 1:
-                realBankerSumNumber = bankerSumNumber + 11
-            default:
-                break
-            }
-            //拿到兩張A
-            if playerSumNumber == 22 {
-                playerSumNumber = 12
-            }
-            if realBankerSumNumber == 22 {
-                realBankerSumNumber = 12
-            }
-            var remainMoney = Int(remainMoneyLabel.text!)!
-            let betMoney = Int(betMoneyLabel.text!)!
-            //莊閒兩張牌21
-            if playerSumNumber == 21, realBankerSumNumber == 21 {
-                wordingLabel.text = "你輸了"
-                betMoneyLabel.text = "0"
-                showBankerHideCard()
-                bankerSum.text = "\(realBankerSumNumber)"
-            } else if playerSumNumber == 21 {
-                wordingLabel.text = "Black Jack"
-                betMoneyLabel.text = "0"
-                showBankerHideCard()
-                remainMoney += betMoney * 5 / 2
-                bankerSum.text = "\(realBankerSumNumber)"
-            } else if realBankerSumNumber == 21 {
-                wordingLabel.text = "你輸了"
-                betMoneyLabel.text = "0"
-                showBankerHideCard()
-                remainMoney -= betMoney
-                bankerSum.text = "\(realBankerSumNumber)"
-            } else {
-                wordingLabel.text = ""
-                bankerSum.text = "\(bankerSumNumber)"
-            }
-            playerSum.text = "\(playerSumNumber)"
-            remainMoneyLabel.text = "\(remainMoney)"
+        
+        for card in self.playerCards {
+            card.alpha = 0
         }
+        
+        //莊閒各第一張牌
+        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0) {
+            self.playerCards[0].image = UIImage(named: self.cards[0].suit + "\(self.cards[0].rank)")
+            self.playerCards[0].alpha = 1
+            self.bankerCards[0].image = UIImage(named: "cardBack")
+            self.bankerCards[0].alpha = 1
+        }
+        //莊閒各第二張牌
+        UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.8, delay: 0.5) {
+            self.playerCards[1].image = UIImage(named: self.cards[2].suit + "\(self.cards[2].rank)")
+            self.playerCards[1].alpha = 1
+            self.bankerCards[1].image = UIImage(named: self.cards[3].suit + "\(self.cards[3].rank)")
+            self.bankerCards[1].alpha = 1
+        }
+        
+        //玩家牌計算
+        playerSumNumber += calculateCardsNumber(cards: [cards[0].rank, cards[2].rank], roleSumNumber: playerSumNumber)
+        
+        //莊家牌計算
+        bankerSumNumber += calculateCardsNumber(cards: [cards[3].rank], roleSumNumber: bankerSumNumber)
+        realBankerSumNumber += calculateCardsNumber(cards: [cards[1].rank], roleSumNumber: realBankerSumNumber)
+        realBankerSumNumber += bankerSumNumber
+        
+        //拿到兩張A both
+        if playerSumNumber == 22 {
+            playerSumNumber = 12
+        }
+        if realBankerSumNumber == 22 {
+            realBankerSumNumber = 12
+        }
+        var remainMoney = Int(remainMoneyLabel.text!)!
+        let betMoney = Int(betMoneyLabel.text!)!
+        //莊閒兩張牌21
+        if playerSumNumber == 21, realBankerSumNumber == 21 {
+            wordingLabel.text = "你輸了"
+            betMoneyLabel.text = "0"
+            showBankerHideCard()
+            
+        } else if playerSumNumber == 21 {
+            wordingLabel.text = "Black Jack"
+            betMoneyLabel.text = "0"
+            showBankerHideCard()
+            remainMoney += betMoney * 5 / 2
+            bankerSum.text = "\(realBankerSumNumber)"
+        } else if realBankerSumNumber == 21 {
+            wordingLabel.text = "你輸了"
+            betMoneyLabel.text = "0"
+            showBankerHideCard()
+            remainMoney -= betMoney
+            bankerSum.text = "\(realBankerSumNumber)"
+        } else {
+            wordingLabel.text = ""
+            bankerSum.text = "\(bankerSumNumber)"
+        }
+        playerSum.text = "\(playerSumNumber)"
+        remainMoneyLabel.text = "\(remainMoney)"
+        
     }
     
     @IBAction func addMinusBetMoney(_ sender: UIButton) {
+        if betMoneyLabel.text == "0" {
+            initSumNumber()
+        }
+        
         var betMoney = Int(betMoneyLabel.text!)!
         var remainMoney = Int(remainMoneyLabel.text!)!
         switch sender.tag {
@@ -153,9 +126,6 @@ class ViewController: UIViewController {
                 
                 playerCards.forEach({$0.alpha = 0})
                 bankerCards.forEach({$0.alpha = 0})
-        
-                playerSum.text = "0"
-                bankerSum.text = "0"
             }
         default:
             break
@@ -166,8 +136,11 @@ class ViewController: UIViewController {
     }
     //開牌
     @IBAction func stand(_ sender: UIButton) {
+        var bankerCardImageNumber = 1
+        var bankerCardsArray = [cards[1], cards[3]]
         let betMoney = Int(betMoneyLabel.text!)!
         var remainMoney = Int(remainMoneyLabel.text!)!
+        
         //show蓋牌
         showBankerHideCard()
         //玩家有無爆牌
@@ -175,49 +148,42 @@ class ViewController: UIViewController {
             wordingLabel.text = "爆掉!"
         } else {
             // 兩張A
-            if bankerSumNumber == 22 {
-                bankerSumNumber = 12
+            if realBankerSumNumber == 22 {
+                realBankerSumNumber = 12
             }
             //莊家小於17 自動補牌
-            while bankerSumNumber < 17 {
+            while realBankerSumNumber < 17 {
                 bankerCardImageNumber += 1
                 stackOfCardIndex += 1
                 UIViewPropertyAnimator.runningPropertyAnimator(withDuration: 0.5, delay: 0) {
-                    self.bankerCards[self.bankerCardImageNumber].image = UIImage(named: self.cards[self.stackOfCardIndex].suit + "\(self.cards[self.stackOfCardIndex].rank)")
-                    self.bankerCards[self.bankerCardImageNumber].alpha = 1
+                    self.bankerCards[bankerCardImageNumber].image = UIImage(named: self.cards[self.stackOfCardIndex].suit + "\(self.cards[self.stackOfCardIndex].rank)")
+                    self.bankerCards[bankerCardImageNumber].alpha = 1
                 }
                 //莊家排計算
-                switch cards[stackOfCardIndex].rank {
-                case 11...13:
-                    bankerSumNumber += 10
-                case 1...10:
-                    bankerSumNumber += cards[stackOfCardIndex].rank
-                default:
-                    break
-                }
-                //當新補的牌=10時，前面A都算1;當補牌後總數<=11，A算11
-                if cards[stackOfCardIndex].rank >= 10 {
-                    if cards[1].rank == 1 {
-                        bankerSumNumber -= 10
-                    } else if cards[3].rank == 1 {
-                        bankerSumNumber -= 10
-                    } else if cards[1].rank == 1, cards[3].rank == 1 {
-                        bankerSumNumber -= 20
+                realBankerSumNumber = calculateCardsNumber(cards: [cards[stackOfCardIndex].rank], roleSumNumber: realBankerSumNumber)
+                
+                bankerCardsArray.append(cards[stackOfCardIndex])
+                let bankCardsAceArray = bankCardsAceArray(cards: bankerCardsArray)
+
+                // sum > 21, A == 1
+                for _ in 0..<bankCardsAceArray.count {
+                    if realBankerSumNumber > 21 {
+                        realBankerSumNumber -= 10
                     }
-                } else if bankerSumNumber <= 11, cards[stackOfCardIndex].rank == 1 {
-                    bankerSumNumber += 10
                 }
-                bankerSum.text = "\(bankerSumNumber)"
+                
+                bankerSum.text = "\(realBankerSumNumber)"
             }
-            if bankerSumNumber > 21 || playerSumNumber > bankerSumNumber {
+            if realBankerSumNumber > 21 || playerSumNumber > realBankerSumNumber {
                 wordingLabel.text = "你贏了"
                 remainMoney += betMoney * 2
-            } else if playerSumNumber < bankerSumNumber {
+            } else if playerSumNumber < realBankerSumNumber {
                 wordingLabel.text = "你輸了"
-            } else if playerSumNumber == bankerSumNumber {
+            } else if playerSumNumber == realBankerSumNumber {
                 wordingLabel.text = "平手"
             }
         }
+        
         betMoneyLabel.text = "0"
         remainMoneyLabel.text = "\(remainMoney)"
         stackOfCardIndex = 3
@@ -297,7 +263,6 @@ class ViewController: UIViewController {
         bankerSum.text = "0"
         stackOfCardIndex = 3
         playerCardImageIndex = 1
-        bankerCardImageNumber = 1
     }
     
     func showBankerHideCard(){
@@ -305,16 +270,44 @@ class ViewController: UIViewController {
             self.bankerCards[0].image = UIImage(named: self.cards[1].suit + "\(self.cards[1].rank)")
             self.bankerCards[0].alpha = 1
         }
-        switch cards[1].rank {
-        case 11...13:
-            bankerSumNumber += 10
-        case 2...10:
-            bankerSumNumber += cards[1].rank
-        case 1:
-            bankerSumNumber += 11
-        default:
-            break
+        
+        bankerSum.text = "\(realBankerSumNumber)"
+    }
+    
+    func calculateCardsNumber(cards: [Int], roleSumNumber: Int) -> Int {
+        var sumNumber = roleSumNumber
+        
+        cards.forEach {
+            switch $0 {
+            case 11...13:
+                sumNumber += 10
+            case 2...10:
+                sumNumber += $0
+            case 1:
+                sumNumber += 11
+            default:
+                break
+            }
         }
-        bankerSum.text = "\(bankerSumNumber)"
+        print("sumNumber: \(sumNumber)")
+        return sumNumber
+    }
+    
+    func initSumNumber() {
+        playerSumNumber = 0
+        bankerSumNumber = 0
+        realBankerSumNumber = 0
+        playerSum.text = "\(playerSumNumber)"
+        bankerSum.text = "\(realBankerSumNumber)"
+    }
+    
+    func bankCardsAceArray(cards: [Card]) -> [Card] {
+        var bankCardsAceArray = [Card]()
+        cards.forEach {
+            if $0.rank == 1 {
+                bankCardsAceArray.append($0)
+            }
+        }
+        return bankCardsAceArray
     }
 }
